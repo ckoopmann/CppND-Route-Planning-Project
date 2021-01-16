@@ -39,11 +39,14 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
     current_node->FindNeighbors();
     float current_g_value = current_node->g_value;
     for (RouteModel::Node *neighbor : current_node->neighbors) {
-        neighbor->g_value = current_g_value + current_node->distance(*neighbor);
-        neighbor->h_value = CalculateHValue(neighbor);
-        neighbor->parent = current_node;
-        neighbor->visited = true;
-        open_list.push_back(neighbor);
+        if(not neighbor->visited){
+            float distance_to_neighbor = current_node->distance(*neighbor);
+            neighbor->g_value = current_g_value + distance_to_neighbor;
+            neighbor->h_value = CalculateHValue(neighbor);
+            neighbor->parent = current_node;
+            neighbor->visited = true;
+            open_list.push_back(neighbor);
+        }
     }
 
 }
@@ -69,13 +72,14 @@ bool Compare(RouteModel::Node const *a, RouteModel::Node const *b) {
 /**
  * Sort the vector of Nodes
  */
-void NodeSort(std::vector<RouteModel::Node*> nodes) {
+void NodeSort(std::vector<RouteModel::Node*> &nodes) {
   sort(nodes.begin(), nodes.end(), Compare);
 }
 
 RouteModel::Node *RoutePlanner::NextNode() {
     NodeSort(open_list);
     RouteModel::Node *next = open_list.back();
+    RouteModel::Node *worst = open_list[0];
     open_list.pop_back();
     return next;
 }
@@ -119,24 +123,19 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
 // - Store the final path in the m_Model.path attribute before the method exits. This path will then be displayed on the map tile.
 
 void RoutePlanner::AStarSearch() {
-    std::cout << "Start Search";
     RouteModel::Node *current_node = start_node;
-    AddNeighbors(current_node);
+    open_list.push_back(start_node);
+    start_node->visited = true;
 
     int counter = 0;
     // TODO: Implement your solution here.
     while(open_list.size() > 0){
-        int size = open_list.size();
-        if(counter % 1000 == 0){
-            std::cout << "Iteration: " << counter << " Open List Size: " << open_list.size() << "\n";
-        }
+        current_node = NextNode();
         if(current_node == end_node){
-            std::cout << "End Reached, Constructing final path";
             m_Model.path = ConstructFinalPath(current_node);
             return;
         }
         counter++;
-        current_node = NextNode();
         AddNeighbors(current_node);
     }
     return;
