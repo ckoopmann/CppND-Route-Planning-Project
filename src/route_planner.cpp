@@ -126,7 +126,10 @@ void RoutePlanner::AStarSearch() {
     int counter = 0;
     // TODO: Implement your solution here.
     while(open_list.size() > 0){
-        std::cout << open_list.size() << ", ";
+        int size = open_list.size();
+        if(size % 20 == 0){
+            std::cout << open_list.size() << "\n";
+        }
         if(current_node == end_node){
             std::cout << "End Reached, Constructing final path";
             m_Model.path = ConstructFinalPath(current_node);
