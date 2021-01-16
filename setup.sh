@@ -1,8 +1,10 @@
+#!/bin/bash 
+echo "Install cmake and libpng"
 brew install cmake
 brew install libpng
 
 echo "Download modified headers"
-git clone --recurse-submodules https://github.com/ckoopmann/CppND-Route-Planning-Project.git
+git clone --recurse-submodules https://github.com/udacity/CppND-Route-Planning-Project.git
 BASEDIR="$PWD"
 
 echo "Exporting CXX and LDFLAGS"
@@ -32,7 +34,7 @@ mkdir build && cd build
 cmake ..
 make
 
-echo "Build the main project"
+echo "Test running the main project"
 ./OSM_A_star_search
 
 
