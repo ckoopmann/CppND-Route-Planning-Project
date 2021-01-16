@@ -127,7 +127,7 @@ void RoutePlanner::AStarSearch() {
     // TODO: Implement your solution here.
     while(open_list.size() > 0){
         int size = open_list.size();
-        if(size % 20 == 0){
+        if(size % 50 == 0){
             std::cout << open_list.size() << "\n";
         }
         if(current_node == end_node){
