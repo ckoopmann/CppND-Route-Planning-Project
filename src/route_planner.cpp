@@ -77,7 +77,6 @@ RouteModel::Node *RoutePlanner::NextNode() {
     NodeSort(open_list);
     RouteModel::Node *next = open_list.back();
     open_list.pop_back();
-    std::cout << "Size of open list after Next Node: " << open_list.size() << "\n";
     return next;
 }
 
@@ -120,13 +119,16 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
 // - Store the final path in the m_Model.path attribute before the method exits. This path will then be displayed on the map tile.
 
 void RoutePlanner::AStarSearch() {
+    std::cout << "Start Search";
     RouteModel::Node *current_node = start_node;
     AddNeighbors(current_node);
 
     int counter = 0;
     // TODO: Implement your solution here.
     while(open_list.size() > 0){
+        std::cout << open_list.size() << ", ";
         if(current_node == end_node){
+            std::cout << "End Reached, Constructing final path";
             m_Model.path = ConstructFinalPath(current_node);
             return;
         }
